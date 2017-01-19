@@ -4,12 +4,13 @@
 // =============================================================================
 
 // call the packages we need
-var express    = require('express');        // call express
+var express    = require('express');
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');
 
 // Modules
 var programmeController  = require('./controllers/programme');
+var userController       = require('./controllers/user');
 
 // define our app using express
 var app  = express();
@@ -53,6 +54,11 @@ router.route('/programmes/:programme_id')
     .get(programmeController.getProgramme)
     .put(programmeController.putProgramme)
     .delete(programmeController.deleteProgramme);
+
+// Create endpoint handlers for /users
+router.route('/users')
+  .post(userController.postUsers)
+  .get(userController.getUsers);
 
 
 // REGISTER OUR ROUTES -------------------------------

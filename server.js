@@ -4,13 +4,15 @@
 // =============================================================================
 
 // call the packages we need
-var express    = require('express');
-var bodyParser = require('body-parser');
-var mongoose   = require('mongoose');
+var express    = require('express'),
+    bodyParser = require('body-parser'),
+    mongoose   = require('mongoose'),
+    passport   = require('passport');
 
 // Modules
-var programmeController  = require('./controllers/programme');
-var userController       = require('./controllers/user');
+var programmeController  = require('./controllers/programme'),
+    userController       = require('./controllers/user'),
+    authController       = require('./controllers/auth');
 
 // define our app using express
 var app  = express();
@@ -24,6 +26,8 @@ mongoose.connect('mongodb://localhost:27017/bearsdb');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Use the passport package in our application
+app.use(passport.initialize());
 
 
 // ROUTES FOR OUR API
@@ -45,20 +49,20 @@ router.get('/', function(req, res) {
 // on routes that end in /programmes
 // ----------------------------------------------------
 router.route('/programmes')
-    .post(programmeController.postProgrammes)
-    .get(programmeController.getProgrammes);
+    .post(authController.isAuthenticated, programmeController.postProgrammes)
+    .get(authController.isAuthenticated, programmeController.getProgrammes);
 
 // on routes that end in /programmes/:programme_id
 // ----------------------------------------------------
 router.route('/programmes/:programme_id')
-    .get(programmeController.getProgramme)
-    .put(programmeController.putProgramme)
-    .delete(programmeController.deleteProgramme);
+    .get(authController.isAuthenticated, programmeController.getProgramme)
+    .put(authController.isAuthenticated, programmeController.putProgramme)
+    .delete(authController.isAuthenticated, programmeController.deleteProgramme);
 
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers)
-  .get(userController.getUsers);
+  .get(authController.isAuthenticated, userController.getUsers);
 
 
 // REGISTER OUR ROUTES -------------------------------

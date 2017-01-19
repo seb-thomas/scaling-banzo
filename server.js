@@ -6,13 +6,13 @@
 // call the packages we need
 var express    = require('express'),
     bodyParser = require('body-parser'),
-    mongoose   = require('mongoose'),
-    passport   = require('passport');
+    mongoose   = require('mongoose');
+    // passport   = require('passport');
 
 // Modules
-var programmeController  = require('./controllers/programme'),
-    userController       = require('./controllers/user'),
-    authController       = require('./controllers/auth');
+var programmeController  = require('./controllers/programme');
+    // userController       = require('./controllers/user'),
+    // authController       = require('./controllers/auth');
 
 // define our app using express
 var app  = express();
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Use the passport package in our application
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 
 // ROUTES FOR OUR API
@@ -49,20 +49,20 @@ router.get('/', function(req, res) {
 // on routes that end in /programmes
 // ----------------------------------------------------
 router.route('/programmes')
-    .post(authController.isAuthenticated, programmeController.postProgrammes)
-    .get(authController.isAuthenticated, programmeController.getProgrammes);
+    .post(programmeController.postProgrammes)
+    .get(programmeController.getProgrammes);
 
 // on routes that end in /programmes/:programme_id
 // ----------------------------------------------------
 router.route('/programmes/:programme_id')
-    .get(authController.isAuthenticated, programmeController.getProgramme)
-    .put(authController.isAuthenticated, programmeController.putProgramme)
-    .delete(authController.isAuthenticated, programmeController.deleteProgramme);
+    .get(programmeController.getProgramme)
+    .put(programmeController.putProgramme)
+    .delete(programmeController.deleteProgramme);
 
 // Create endpoint handlers for /users
-router.route('/users')
-  .post(userController.postUsers)
-  .get(authController.isAuthenticated, userController.getUsers);
+// router.route('/users')
+//   .post(userController.postUsers)
+//   .get(authController.isAuthenticated, userController.getUsers);
 
 
 // REGISTER OUR ROUTES -------------------------------
@@ -75,4 +75,7 @@ app.use('/api', router);
 // =============================================================================
 app.listen(port);
 console.log('Magic happens on port http://localhost:' + port);
+
+
+
 

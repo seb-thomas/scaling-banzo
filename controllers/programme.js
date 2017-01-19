@@ -2,8 +2,12 @@ var Programme = require('../models/programme');
 
 exports.postProgrammes = function(req, res) {
     // create a new instance of the Programme model
-    var programme = new Programme();  
-    programme.name = req.body.name;  // set the programmes name (comes from the request)
+    var programme = new Programme();
+
+    // Set the programme properties that came from the POST data
+    programme.name = req.body.name;
+    programme.pid = req.body.pid;
+    // programme.userId = req.user._id;
 
     // save the programme and check for errors
     programme.save(function(err) {
@@ -39,6 +43,7 @@ exports.putProgramme = function(req, res) {
             res.send(err);
 
         programme.name = req.body.name;  // update the programmes info
+        programme.pid = req.body.pid;  // update the programmes info
 
         // save the programme
         programme.save(function(err) {

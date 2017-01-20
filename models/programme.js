@@ -3,7 +3,7 @@ var Schema       = mongoose.Schema;
 
 var ProgrammeSchema   = new Schema({
     name: String, 
-    pid: String,
+    pid: { type: String, unique: true },
     shows: Array
 });
 

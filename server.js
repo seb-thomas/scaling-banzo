@@ -20,6 +20,7 @@ var port = process.env.PORT || 8888;
 
 // Connect to db
 mongoose.connect('mongodb://localhost:27017/bearsdb');
+mongoose.Promise = require('bluebird');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -52,7 +53,8 @@ router.route('/populate/programmes')
 // ----------------------------------------------------
 router.route('/programmes')
     .post(programmeController.postProgrammes)
-    .get(programmeController.getProgrammes);
+    .get(programmeController.getProgrammes)
+    .delete(programmeController.deleteProgrammes);
 
 // on routes that end in /programmes/:programme_id
 // ----------------------------------------------------

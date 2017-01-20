@@ -66,3 +66,12 @@ exports.deleteProgramme = function(req, res) {
         res.json({ message: 'Successfully deleted' });
     });
 }
+
+exports.deleteProgrammes = function(req, res) {
+    Programme.remove({}, function(err, programme) {
+        if (err)
+            res.send(err);
+
+        res.json({ message: 'All successfully deleted' });
+    });
+}

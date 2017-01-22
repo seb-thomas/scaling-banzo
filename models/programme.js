@@ -2,8 +2,9 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var ProgrammeSchema   = new Schema({
-    name: String, 
+    name: String,
     pid: { type: String, unique: true },
+    desc: String,
     shows: Array
 });
 

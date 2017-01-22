@@ -3,7 +3,7 @@ var rp = require('request-promise');
 var Programme = require('../models/programme');
 
 exports.populateProgrammes = function(req, res) {
-    let programmes = ['b007qlvb', 'b006qsq5', 'b006qrpf', 'b006tp43', 'b006qp6p', 'b006qgj4', 'b006r9xr', 'b006tnsf'];
+    const pids = ['b007qlvb', 'b006qsq5', 'b006qrpf', 'b006tp43', 'b006qp6p', 'b006qgj4', 'b006r9xr', 'b006tnsf'];
 
     var options = {
         uri: 'http://www.bbc.co.uk/programmes/b006qsq5.json',
@@ -13,83 +13,74 @@ exports.populateProgrammes = function(req, res) {
         json: true // Automatically parses the JSON string in the response
     };
 
-    rp(options)
-        .then(function (body) {
-            // Mongoose allows us query db for existing PID and upsert
-            var query = {pid: body.programme.pid},
-                update = {
-                    name: body.programme.title,
-                    pid: body.programme.pid,
-                    desc: body.programme.short_synopsis
-                },
-                options = { upsert: true, new: true };
+    // rp(options)
+    //     .then(function (body) {
+    //         // Mongoose allows us query db for existing PID and upsert
+    //         var query = {pid: body.programme.pid},
+    //             update = {
+    //                 name: body.programme.title,
+    //                 pid: body.programme.pid,
+    //                 desc: body.programme.short_synopsis
+    //             },
+    //             options = { upsert: true, new: true };
 
-            // Find the document
-            Programme.findOneAndUpdate(query, update, options, function(err, result) {
-                if (err) return res.send(500, { error: err });
-                return res.send("succesfully saved");
-            });
+    //         // Find the document
+    //         Programme.findOneAndUpdate(query, update, options, function(err, result) {
+    //             if (err) return res.send(500, { error: err });
+    //             return res.send("succesfully saved");
+    //         });
+    //     })
+    //     .catch(function (err) {
+    //         return res.send(err);
+    //     })
+    //     .finally(function () {
+    //         // This is called after the request finishes either successful or not successful.
+    //         // return res.json({ message: 'Programme updated! (maybe)' });
+    //     });
+
+        Promise.map(pids, pid => {
+            let url = 'http://www.bbc.co.uk/programmes/'+pid+'.json';
+
+            return rp({uri: url, json: true})
+                .then(result => ({result, success:true}))
+                .catch(error => ({error, success:false}))
         })
-        .catch(function (err) {
-            return res.send(err);
+        .then(results => {
+            let succeeded = results
+                .filter(result => result.success)
+                .map(result => result.result);
+            let failed = results
+                .filter(result => !result.success)
+                .map(result => console.log('error', result.error));
         })
+        .then(console.log.bind(console))
+        .catch(console.log.bind(console))
         .finally(function () {
             // This is called after the request finishes either successful or not successful.
-            // return res.json({ message: 'Programme updated! (maybe)' });
+            return res.json({ message: 'Programme updated! (maybe)' });
         });
-    // create request objects
-    // var requests = [{
-    //   url: 'https://jsonplaceholder.typicode.com/posts',
-    //   headers: {
-    //     'User-Agent': 'Request-Promise'
-    //   }
-    // }, {
-    //   url: 'https://jsonplaceholder.typicode.com/comments',
-    //   headers: {
-    //     'User-Agent': 'Request-Promise'
-    //   }
-    // }];
 
-    // Promise.map(requests, function(obj) {
-    //   return rp(obj).then(function(body) {
-    //     console.log(body)
-    //     // return JSON.parse(body);
-    //   });
-    // })
-    // .then(function(results) {
-    //   // console.log(results);
-    //   // for (var i = 0; i < results.length; i++) {
-    //   //   console.log(results[i])
-    //   // }
-    // }, function(err) {
-    //   // handle all your errors here
-    // });
-    // const urls = ['http://google.be', 'http://plonko.co.uk']
+        // const findAndUpdate = (results) => Promise
+        //     .each(results.map(obj => {
+        //     // you have access to original {a: 'site.com'}
+        //     // here, so use that 'a' prop to your advantage by abstracting out
+        //     // your db config somewhere outside your service
+        //     return Programme.findOneAndUpdate(someConfig[obj.source], obj.data);
+        //     }))
+        // // Mongoose allows us query db for existing PID and upsert
+        // var query = {pid: body.programme.pid},
+        //     update = {
+        //         name: body.programme.title,
+        //         pid: body.programme.pid,
+        //         desc: body.programme.short_synopsis
+        //     },
+        //     options = { upsert: true, new: true };
 
-    // Promise.map(urls, rp)
-    //   .map((htmlOnePage, index) => {
-    //     // const $ = cheerio.load(htmlOnePage);
-    //     // const share = $('.nb-shares').html();
-    //     // let shareTuple = {};
-    //     // shareTuple[urls[index]] = share;
-    //     return htmlOnePage;
-    //   })
-    //   .then(console.log)
-    //   .catch((e) => console.log('We encountered an error' + e));
-
-
-    // var request1 = rp('http://www.bbc.co.uk/programmes/b006qsq5.json');
-    // var request2 = rp('http://www.bbc.co.uk/programmes/b006qrpf.json');
-    // // var request3 = rp(paramsReq3);
-
-    // Promise.each([request1, request2])
-    //     .then(function (body) {
-    //         // All requests succeeded.
-    //         // Process the responses now.
-    //         return console.log(body);
-    //         res.end()
-    //     })
-    //     .catch(console.log.bind(console));
+        // // Find the document
+        // Programme.findOneAndUpdate(query, update, options, function(err, result) {
+        //     if (err) return res.send(500, { error: err });
+        //     return res.send("succesfully saved");
+        // });
 }
 
 // exports.hipsterJesus = {

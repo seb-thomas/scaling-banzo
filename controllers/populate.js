@@ -3,84 +3,54 @@ var rp = require('request-promise');
 var Programme = require('../models/programme');
 
 exports.populateProgrammes = function(req, res) {
-    const pids = ['b007qlvb', 'b006qsq5', 'b006qrpf', 'b006tp43', 'b006qp6p', 'b006qgj4', 'b006r9xr', 'b006tnsf'];
+    const bbcPids = ['b007qlvb', 'DASDA', 'b006qrpf'];
 
-    var options = {
-        uri: 'http://www.bbc.co.uk/programmes/b006qsq5.json',
-        headers: {
-            'User-Agent': 'Request-Promise'
-        },
-        json: true // Automatically parses the JSON string in the response
-    };
+    const getResults = bbcPid => {
+        let url = 'http://www.bbc.co.uk/programmes/'+bbcPid+'.json';
 
-    // rp(options)
-    //     .then(function (body) {
-    //         // Mongoose allows us query db for existing PID and upsert
-    //         var query = {pid: body.programme.pid},
-    //             update = {
-    //                 name: body.programme.title,
-    //                 pid: body.programme.pid,
-    //                 desc: body.programme.short_synopsis
-    //             },
-    //             options = { upsert: true, new: true };
+        return rp({uri: url, json: true})
+            .then(result => ({result, success:true}))
+            .catch(error => ({error, success:false}))
+    }
 
-    //         // Find the document
-    //         Programme.findOneAndUpdate(query, update, options, function(err, result) {
-    //             if (err) return res.send(500, { error: err });
-    //             return res.send("succesfully saved");
-    //         });
-    //     })
-    //     .catch(function (err) {
-    //         return res.send(err);
-    //     })
-    //     .finally(function () {
-    //         // This is called after the request finishes either successful or not successful.
-    //         // return res.json({ message: 'Programme updated! (maybe)' });
-    //     });
+    const filterSucceeded = results => results
+        .filter(result => result.success)
+        .map(result => result.result);
 
-        Promise.map(pids, pid => {
-            let url = 'http://www.bbc.co.uk/programmes/'+pid+'.json';
+    const findAndUpdate = results => {
+        const data = results.Object.programme;
+        
+        // Mongoose allows us query db for existing PID and upsert
+        const query = { pid: data.pid };
+        const update = {
+            name: data.title,
+            pid: data.pid,
+            desc: data.short_synopsis
+        };
+        const options = { upsert: true, new: true };
 
-            return rp({uri: url, json: true})
-                .then(result => ({result, success:true}))
-                .catch(error => ({error, success:false}))
-        })
-        .then(results => {
-            let succeeded = results
-                .filter(result => result.success)
-                .map(result => result.result);
-            let failed = results
-                .filter(result => !result.success)
-                .map(result => console.log('error', result.error));
-        })
-        .then(console.log.bind(console))
-        .catch(console.log.bind(console))
-        .finally(function () {
-            // This is called after the request finishes either successful or not successful.
-            return res.json({ message: 'Programme updated! (maybe)' });
-        });
+        return Programme.findOneAndUpdate(query, update, options)
+    }
 
-        // const findAndUpdate = (results) => Promise
-        //     .each(results.map(obj => {
-        //     // you have access to original {a: 'site.com'}
-        //     // here, so use that 'a' prop to your advantage by abstracting out
-        //     // your db config somewhere outside your service
-        //     return Programme.findOneAndUpdate(someConfig[obj.source], obj.data);
-        //     }))
-        // // Mongoose allows us query db for existing PID and upsert
-        // var query = {pid: body.programme.pid},
-        //     update = {
-        //         name: body.programme.title,
-        //         pid: body.programme.pid,
-        //         desc: body.programme.short_synopsis
-        //     },
-        //     options = { upsert: true, new: true };
+    Promise
+        .map(bbcPids, getResults)
+        .then(filterSucceeded)
+    // .then(results => {
+    //     let succeeded = results
+    //         .filter(result => result.success)
+    //         .map(result => result.result);
+    //     let failed = results
+    //         .filter(result => !result.success)
+    //         .map(result => result.error);
 
-        // // Find the document
-        // Programme.findOneAndUpdate(query, update, options, function(err, result) {
-        //     if (err) return res.send(500, { error: err });
-        //     return res.send("succesfully saved");
-        // });
+    //     console.log(results, succeeded, failed);
+    // })
+    .then(findAndUpdate)
+    .catch(console.log.bind(console))
+    .finally(function () {
+        // This is called after the request finishes either successful or not successful.
+        return res.json({ message: 'Programme updated! (maybe)' });
+    });
 }
 
 // exports.hipsterJesus = {

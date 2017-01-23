@@ -4,10 +4,10 @@ var Programme = require('../models/programme');
 var config = require('../config/config');
 
 exports.populateProgrammes = function(req, res) {
-    const bbcPids = config.config.bbcApi.brandPids;
+    const bbcPids = config.bbcApi.brandPids;
 
     const getResults = bbcPid => {
-        let url = config.config.bbcApi.base+bbcPid+'.json';
+        let url = config.bbcApi.base+bbcPid+'.json';
 
         return rp({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
             .then(result => ({result, success:true}))

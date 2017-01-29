@@ -1,6 +1,7 @@
 var Promise = require("bluebird");
 var rp = require('request-promise');
 var Brand = require('../models/brand');
+var Episode = require('../models/brand');
 var config = require('../config/config');
 
 exports.populateBrands = function(req, res) {
@@ -27,7 +28,6 @@ exports.populateBrands = function(req, res) {
             const update = {
                 title: brand.title,
                 pid: brand.pid,
-                desc: brand.short_synopsis,
                 synopsis: brand.short_synopsis,
                 ownership: {
                     key: brand.ownership.service.key,
@@ -51,4 +51,21 @@ exports.populateBrands = function(req, res) {
         .then(findAndUpdate)
         .catch(console.log.bind(console))
         .finally(() => res.json({ message: 'Done' }));
+}
+
+exports.populateEpisodeIndex = function(req, res) {
+    // 1. Use brand pid to get episode index
+    //    * Should brand pid come from hardcoded pids or saved brand data?
+    // 2. Save all episode pids in documents
+    // 3. When page 1 is complete, move to page 2 and repeat
+
+    // Use :brand_id: to specify one brand at a time. (or brand pid)
+
+}
+
+exports.populateEpisodes = function(req, res) {
+    // 1. Loop over all episode documents
+    // 2. Use episode pid to get episode detail json
+    // 3. Filter results by keywords on long_synopsis
+    // 4. On success, save remaining fields to episode document
 }

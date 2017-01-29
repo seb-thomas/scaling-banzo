@@ -46,8 +46,15 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
+
 router.route('/populate/brands')
     .get(populateController.populateBrands);
+
+router.route('/populate/episodes/index')
+    .get(populateController.populateEpisodeIndex);
+
+router.route('/populate/episodes/')
+    .get(populateController.populateEpisodes);
 
 // on routes that end in /brands
 // ----------------------------------------------------

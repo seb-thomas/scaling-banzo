@@ -1,13 +1,13 @@
 var Promise = require("bluebird");
 var rp = require('request-promise');
-var Programme = require('../models/programme');
+var Brand = require('../models/brand');
 var config = require('../config/config');
 
-exports.populateProgrammes = function(req, res) {
+exports.populateBrands = function(req, res) {
     const bbcPids = config.bbcApi.brandPids;
 
     const getResults = bbcPid => {
-        let url = config.bbcApi.base+bbcPid+'.json';
+        let url = `${config.bbcApi.base+bbcPid}.json`;
 
         return rp({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
             .then(result => ({result, success:true}))
@@ -20,19 +20,25 @@ exports.populateProgrammes = function(req, res) {
 
     const findAndUpdate = results => {
         results.map(obj => {
-            const programme = obj.programme;
-            
+            const brand = obj.programme;
+
             // Mongoose allows us query db for existing PID and upsert
-            const query = { pid: programme.pid };
+            const query = { pid: brand.pid };
             const update = {
-                name: programme.title,
-                pid: programme.pid,
-                desc: programme.short_synopsis
+                title: brand.title,
+                pid: brand.pid,
+                desc: brand.short_synopsis,
+                synopsis: brand.short_synopsis,
+                ownership: {
+                    key: brand.ownership.service.key,
+                    title: brand.ownership.service.title
+                },
+                type: brand.type
             };
             const options = { upsert: true, new: true };
 
-            // Programme.findOneAndUpdate(query, update, options)
-            return Programme.findOneAndUpdate(query, update, options, function(err, doc) {
+            // Brand.findOneAndUpdate(query, update, options)
+            return Brand.findOneAndUpdate(query, update, options, function(err, doc) {
                 if (err) return console.log(500, { error: err });
                 console.log("succesfully saved");
             });

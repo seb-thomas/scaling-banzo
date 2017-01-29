@@ -11,7 +11,7 @@ var express    = require('express'),
 
 
 // Modules
-var programmeController  = require('./controllers/programme');
+var brandController  = require('./controllers/brand');
 var populateController  = require('./controllers/populate');
 
 // define our app using express
@@ -46,22 +46,22 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
-router.route('/populate/programmes')
-    .get(populateController.populateProgrammes);
+router.route('/populate/brands')
+    .get(populateController.populateBrands);
 
-// on routes that end in /programmes
+// on routes that end in /brands
 // ----------------------------------------------------
-router.route('/programmes')
-    .post(programmeController.postProgrammes)
-    .get(programmeController.getProgrammes)
-    .delete(programmeController.deleteProgrammes);
+router.route('/brands')
+    .post(brandController.postBrands)
+    .get(brandController.getBrands)
+    .delete(brandController.deleteBrands);
 
-// on routes that end in /programmes/:programme_id
+// on routes that end in /brands/:brand_id
 // ----------------------------------------------------
-router.route('/programmes/:programme_id')
-    .get(programmeController.getProgramme)
-    .put(programmeController.putProgramme)
-    .delete(programmeController.deleteProgramme);
+router.route('/brands/:brand_id')
+    .get(brandController.getBrand)
+    .put(brandController.putBrand)
+    .delete(brandController.deleteBrand);
 
 // Create endpoint handlers for /users
 // router.route('/users')

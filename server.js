@@ -4,36 +4,49 @@
 // =============================================================================
 
 // call the packages we need
-var express    = require('express'),
+let express    = require('express'),
     bodyParser = require('body-parser'),
     mongoose   = require('mongoose'),
     morgan     = require('morgan');
-
+    config     = require('config');
 
 // Modules
-var brandController  = require('./controllers/brand');
-var populateController  = require('./controllers/populate');
+let brandController  = require('./controllers/brand');
+let populateController  = require('./controllers/populate');
 
 // define our app using express
-var app = module.exports = express();
-var port = process.env.PORT || 8888;
+let app = module.exports = express();
+let port = process.env.PORT || 8888;
+
+// Database
+// db options
+let options = {
+    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } }
+};
 
 // Connect to db
-mongoose.connect('mongodb://localhost:27017/bearsdb');
+mongoose.connect(config.DBHost, options);
 mongoose.Promise = require('bluebird');
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
+// Morgan logging
+// don't show the log when it is test
+if(config.util.getEnv('NODE_ENV') !== 'test') {
+    //use morgan to log at command line
+    app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
+}
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// use morgan to log requests to the console
-app.use(morgan('dev'));
-
 
 // ROUTES FOR OUR API
 // =============================================================================
-var router = express.Router();              // get an instance of the express Router
+let router = express.Router();              // get an instance of the express Router
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
@@ -43,9 +56,7 @@ router.use(function(req, res, next) {
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8888/api)
-router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });
-});
+router.get('/', (req, res) => res.json({ message: 'hooray! welcome to our api!' }));
 
 router.route('/populate/brands')
     .get(populateController.populateBrands);

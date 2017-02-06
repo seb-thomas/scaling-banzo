@@ -1,7 +1,7 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
-var BrandSchema   = new Schema({
+var BrandSchema = new Schema({
     title: String,
     pid: { type: String, unique: true },
     synopsis: String,

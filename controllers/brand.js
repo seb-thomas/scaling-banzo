@@ -10,7 +10,7 @@ exports.postBrands = function(req, res) {
     // brand.userId = req.user._id;
 
     // save the brand and check for errors
-    brand.save(function(err) {
+    brand.save(err => {
         if (err)
             res.send(err);
 

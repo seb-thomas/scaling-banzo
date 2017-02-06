@@ -2,19 +2,15 @@ var Brand = require('../models/brand');
 
 exports.postBrands = function(req, res) {
     // create a new instance of the Brand model
-    var brand = new Brand();
-
-    // Set the brand properties that came from the POST data
-    brand.title = req.body.title;
-    brand.pid = req.body.pid;
-    // brand.userId = req.user._id;
+    var newBrand = new Brand(req.body);
 
     // save the brand and check for errors
-    brand.save(err => {
-        if (err)
+    newBrand.save((err, brand) => {
+        if (err){
             res.send(err);
-
-        res.json({ message: 'Brand created!' });
+        } else {
+            res.json({ message: 'Brand created!', brand });
+        }
     });
 }
 

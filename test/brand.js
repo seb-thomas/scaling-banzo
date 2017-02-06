@@ -33,4 +33,58 @@ describe('Brands', () => {
         });
     });
 
+    // Test the /POST route
+    describe('/POST brand', () => {
+        it('it should not POST a brand without a type field', (done) => {
+            let brand = {
+                title: 'String',
+                pid: 'String',
+                synopsis: 'String',
+                ownership: {
+                    key: 'String',
+                    title: 'String'
+                }
+            }
+            chai.request(server)
+            .post('/api/brands')
+            .send(brand)
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('errors');
+                res.body.errors.should.have.property('type');
+                res.body.errors.type.should.have.property('kind').eql('required');
+                done();
+            });
+        });
+
+        it('it should POST a brand ', (done) => {
+        let brand = {
+            title: 'String',
+            pid: 'String',
+            synopsis: 'String',
+            ownership: {
+                key: 'String',
+                title: 'String'
+            },
+            type: 'String'
+        }
+        chai.request(server)
+            .post('/api/brands')
+            .send(brand)
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message').eql('Brand created!');
+                res.body.brand.should.have.property('title');
+                res.body.brand.should.have.property('pid');
+                res.body.brand.should.have.property('synopsis');
+                res.body.brand.should.have.property('ownership');
+                res.body.brand.should.have.deep.property('ownership.key');
+                res.body.brand.should.have.deep.property('ownership.title');
+                res.body.brand.should.have.property('type');
+              done();
+            });
+        });
+    });
 });

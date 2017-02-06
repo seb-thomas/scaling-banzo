@@ -9,7 +9,7 @@ var BrandSchema = new Schema({
         key: String,
         title: String
     },
-    type: String
+    type: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Brand', BrandSchema);

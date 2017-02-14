@@ -53,7 +53,8 @@ exports.populateBrands = function(req, res) {
         .finally(() => res.json({ message: 'Done' }));
 }
 
-exports.populateEpisodeIndex = function(req, res) {
+exports.populateEpisodeIndex = function(num1, num2) {
+    return num1 + num2;
     // 1. Use brand pid to get episode index
     //    * Should brand pid come from hardcoded pids or saved brand data?
     // 2. Save all episode pids in documents

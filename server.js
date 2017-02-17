@@ -4,23 +4,23 @@
 // =============================================================================
 
 // call the packages we need
-let express    = require('express'),
-    bodyParser = require('body-parser'),
-    mongoose   = require('mongoose'),
-    morgan     = require('morgan');
-    config     = require('config');
+const express    = require('express'),
+      bodyParser = require('body-parser'),
+      mongoose   = require('mongoose'),
+      morgan     = require('morgan');
+      config     = require('config');
 
 // Modules
-let brandController  = require('./controllers/brand');
-let populateController  = require('./controllers/populate');
+const brandController  = require('./controllers/brand');
+const populateController  = require('./controllers/populate');
 
 // define our app using express
-let app = module.exports = express();
-let port = process.env.PORT || 8888;
+const app = module.exports = express();
+const port = process.env.PORT || 8888;
 
 // Database
 // db options
-let options = {
+const options = {
     server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
     replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } }
 };

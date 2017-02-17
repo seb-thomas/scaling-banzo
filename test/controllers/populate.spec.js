@@ -15,11 +15,5 @@ describe('populateController', function() {
             const actual = typeof populateController.populateEpisodeIndex;
             expect(actual).to.eql(expected);
         });
-
-        it('should add two numbers', function() {
-            const expected = 4;
-            const actual = populateController.populateEpisodeIndex(2, 2);
-            expect(actual).to.eql(expected);
-        });
     });
 });

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "set NODE_ENV=dev && node server.js",
-    "test": "mocha --reporter=nyan --recursive **/*spec.js"
+    "test": "mocha --reporter=nyan --recursive"
   },
   "author": "",
   "license": "ISC",

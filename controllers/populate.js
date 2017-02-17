@@ -1,20 +1,11 @@
-var Promise = require("bluebird");
-var rp = require('request-promise');
-var Brand = require('../models/brand');
-var Episode = require('../models/brand');
-var config = require('../config/config');
+const Promise = require("bluebird"),
+      config = require('config'),
+      rp = require('request-promise'),
+      Brand = require('../models/brand'),
+      Episode = require('../models/brand'),
+      modules = require('./modules');
 
 exports.populateBrands = function(req, res) {
-    const bbcPids = config.bbcApi.brandPids;
-
-    const getResults = bbcPid => {
-        let url = `${config.bbcApi.base+bbcPid}.json`;
-
-        return rp({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
-            .then(result => ({result, success:true}))
-            .catch(error => ({error, success:false}))
-    }
-
     const filterSucceeded = results => results
         .filter(result => result.success)
         .map(result => result.result);
@@ -46,15 +37,16 @@ exports.populateBrands = function(req, res) {
     }
 
     Promise
-        .map(bbcPids, getResults)
+        .map(config.bbcApi.brandPids, modules.makeUrls)
+        .map(url, modules.getResults)
         .then(filterSucceeded)
         .then(findAndUpdate)
         .catch(console.log.bind(console))
         .finally(() => res.json({ message: 'Done' }));
 }
 
-exports.populateEpisodeIndex = function(num1, num2) {
-    return num1 + num2;
+
+exports.populateEpisodeIndex = function(req, res) {
     // 1. Use brand pid to get episode index
     //    * Should brand pid come from hardcoded pids or saved brand data?
     // 2. Save all episode pids in documents

@@ -6,6 +6,7 @@ const Promise = require("bluebird"),
       modules = require('./modules');
 
 exports.populateBrands = function(req, res) {
+
     const filterSucceeded = results => results
         .filter(result => result.success)
         .map(result => result.result);
@@ -35,10 +36,9 @@ exports.populateBrands = function(req, res) {
             });
         })
     }
-
     Promise
-        .map(config.bbcApi.brandPids, modules.makeUrls)
-        .map(url, modules.getResults)
+        .map(config.bbcApi.brandPids, modules.makeUrls('.json'))
+        .map(modules.getResults)
         .then(filterSucceeded)
         .then(findAndUpdate)
         .catch(console.log.bind(console))

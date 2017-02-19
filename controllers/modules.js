@@ -2,10 +2,8 @@ const config = require('config'),
       rp     = require('request-promise');
 
 // exports
-function makeUrls(id) {
-    return `${config.bbcApi.base+id}.json`;
-           `${config.bbcApi.base+id}./episodes/player.jsonz`
-    'http://www.bbc.co.uk/programmes/b006qsq5/episodes/player.json'
+function makeUrls(url) {
+    return val => config.bbcApi.base+val+url;
 }
 
 function getResults(url) {

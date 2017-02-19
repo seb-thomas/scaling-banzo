@@ -12,6 +12,7 @@ const express    = require('express'),
 
 // Modules
 const brandController  = require('./controllers/brand');
+const episodeController  = require('./controllers/episode');
 const populateController  = require('./controllers/populate');
 
 // define our app using express
@@ -59,7 +60,7 @@ router.get('/', (req, res) => res.json({ message: 'hooray! welcome to our api!' 
 router.route('/populate/brands')
     .get(populateController.populateBrands);
 
-router.route('/populate/episodes/index')
+router.route('/populate/episodes/index/:episode_id')
     .get(populateController.populateEpisodeIndex);
 
 router.route('/populate/episodes/')
@@ -78,6 +79,12 @@ router.route('/brands/:brand_id')
     .get(brandController.getBrand)
     .put(brandController.putBrand)
     .delete(brandController.deleteBrand);
+
+// on routes that end in /episodes
+// ----------------------------------------------------
+router.route('/episodes')
+    .get(episodeController.getEpisodes)
+    .delete(episodeController.deleteEpisodes);
 
 // Create endpoint handlers for /users
 // router.route('/users')

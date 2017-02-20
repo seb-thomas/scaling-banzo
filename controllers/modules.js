@@ -45,9 +45,15 @@ function findAndUpdate(results) {
     })
 }
 
+function hasNextPage(total, offset, count) {
+    console.log(arguments);
+    return total-offset >= count; 
+}
+
 module.exports = {
     getResults: getResults,
     makeUrls: makeUrls,
     filterSucceeded: filterSucceeded,
-    findAndUpdate: findAndUpdate
+    findAndUpdate: findAndUpdate,
+    hasNextPage: hasNextPage
 }

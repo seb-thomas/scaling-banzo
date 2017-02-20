@@ -66,6 +66,7 @@ exports.populateEpisodeIndex = function(req, res) {
         .map(episode_id, modules.makeUrls(config.bbcApi.episodesPath))
         .map(modules.getResults)
         .then(modules.filterSucceeded)
+        .then(modules.hasNextPage)
         .then(findAndUpdate)
         .then(console.log.bind(console))
         .finally(() => res.json({ message: 'Done' }));

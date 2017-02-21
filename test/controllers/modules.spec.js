@@ -15,7 +15,7 @@ describe('populateController', function() {
             expect(actual).to.eql(expected);
         });
     });
-
+    
     // describe isPagedData
     // it should return true if page key exists
     // expected true
@@ -31,7 +31,7 @@ describe('populateController', function() {
 
     describe('hasNextPage', function() {
         it('should return true if total - offset >= 30', function() {
-            const expected = false;
+            const expected = true;
             const actual = modules.hasNextPage(882, 840, 30);
             expect(actual).to.eql(expected);
         });

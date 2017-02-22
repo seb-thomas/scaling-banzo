@@ -1,11 +1,12 @@
- {
+{
   "name": "bear-books",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "set NODE_ENV=dev && node server.js",
-    "test": "mocha --reporter=nyan --recursive **/*.spec.js"
+    "test": "nyc mocha --reporter=nyan --recursive **/*.spec.js",
+     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
-    "mocha": "^3.2.0"
+    "codecov": "^1.0.1",
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2"
   }
 }

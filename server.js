@@ -60,7 +60,7 @@ router.get('/', (req, res) => res.json({ message: 'hooray! welcome to our api!' 
 router.route('/populate/brands')
     .get(populateController.populateBrands);
 
-router.route('/populate/episodes/index/:episode_id')
+router.route('/populate/episodes/index/:brand_pid')
     .get(populateController.populateEpisodeIndex);
 
 router.route('/populate/episodes/')

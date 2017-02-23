@@ -7,7 +7,6 @@ describe('populateController', function() {
     });
     
     const modules  = require('../../controllers/modules');
-    // const config = require('config');
 
     describe('modules', function() {
         it('should be an object', function() {

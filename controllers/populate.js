@@ -43,10 +43,14 @@ exports.populateBrands = function(req, res) {
 
 exports.populateEpisodeIndex = function(req, res) {
 
-    const episode_id = req.params.episode_id.split();
+    const brand_pid = req.params.brand_pid.split();
+
+    const collect = results => {
+        console.log(results)
+    }
 
     const findAndUpdate = results => {
-        results[0].episodes.map(obj => {
+        results.result.episodes.map(obj => {
             const episode = obj.programme;
 
             // Mongoose allows us query db for existing PID and upsert
@@ -63,10 +67,11 @@ exports.populateEpisodeIndex = function(req, res) {
     }
 
     Promise
-        .map(episode_id, modules.makeUrls(config.bbcApi.episodesPath))
+        .map(brand_pid, modules.makeUrls(config.bbcApi.episodesPath))
         .map(modules.getResults)
         .then(modules.filterSucceeded)
         .then(modules.hasNextPage)
+        .then(collect)
         .then(findAndUpdate)
         .then(console.log.bind(console))
         .finally(() => res.json({ message: 'Done' }));

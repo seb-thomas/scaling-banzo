@@ -18,8 +18,11 @@ function filterSucceeded(results) {
         .map(result => result.result);
 }
 
-function hasNextPage(total, offset, count) {
-    return total-offset >= count;
+function hasNextPage(results) {
+    const result = results[0];
+    const hasNextPage = result.total - result.offset >= 30;
+
+    return {result, hasNextPage};
 }
 
 module.exports = {

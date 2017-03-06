@@ -1,5 +1,5 @@
-const config = require('config'),
-      rp     = require('request-promise');
+const config   = require('config'),
+      request  = require('request-promise');
 
 // exports
 function makeUrls(path) {
@@ -7,7 +7,7 @@ function makeUrls(path) {
 }
 
 function getResults(url) {
-    return rp({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
+    return request({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
         .then(result => ({result, success:true}))
         .catch(error => ({error, success:false}))
 }

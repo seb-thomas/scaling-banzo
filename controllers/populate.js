@@ -1,6 +1,5 @@
 const Promise = require("bluebird"),
       config = require('config'),
-      rp = require('request-promise'),
       Brand = require('../models/brand'),
       Episode = require('../models/episode'),
       modules = require('./modules');
@@ -47,7 +46,47 @@ exports.populateEpisodeIndex = function(req, res) {
 
     const collect = results => {
         console.log(results)
+        // Object {result: Object, hasNextPage: true}
+        // hasNextPage: true
+        // result: Object
+            // episodes: Array[30] 
+            // offset: 0 
+            // page: 1
+            // total: 2151
     }
+
+    // const getResultsHelper = Promise.method((pageNumber, catsSoFar) => {
+    //     const path = config.bbcApi.base+brand_pid+config.bbcApi.episodesPath;
+    //     const url = pageNumber === 0 ? path : `${path}?page=${pageNumber}`
+    //     // www.bbc.co.uk/programmes/b006tp43/episodes/player.json?page=29
+
+    //     return request.get(url)
+    //         .then((adoptionsPage) => {
+    //             const cats = cheerio(adoptionsPage)
+    //                 .find("a")
+    //                 .filter((i, tag) => tag.attribs.href && tag.attribs.href.match(/adoptions\/pet-details\/\d+/))
+    //                 .map((i, tag) => `${SFSPCA_BASE}${tag.attribs.href}`)
+    //                 .toArray();
+    //             if (!cats || cats.length === 0) {
+    //                 return catsSoFar;
+    //             } else {
+    //                 return getResultsHelper(pageNumber + 1, catsSoFar.concat(cats));
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.log("Error fetching cats:", err);
+    //             return catsSoFar;
+    //         });
+    // });
+    // const getResults = () => getResultsHelper(0, []);
+
+    // make url from pid
+    // query api with url
+    // Add results to db
+    // if has next page
+    // Add to page index
+    // Add to url
+    // query api with url
 
     const findAndUpdate = results => {
         results.result.episodes.map(obj => {

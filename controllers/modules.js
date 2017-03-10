@@ -1,13 +1,20 @@
 const config   = require('config'),
+      Promise = require("bluebird"),
       request  = require('request-promise');
+
+const requestBBC = request.defaults({
+    baseUrl: config.bbcApi.base, 
+    json: true, 
+    headers: {'User-Agent': 'Request-Promise'}
+})
 
 // exports
 function makeUrls(path) {
-    return val => config.bbcApi.base+val+path;
+    return val => val+path;
 }
 
 function getResults(url) {
-    return request({uri: url, json: true, headers: {'User-Agent': 'Request-Promise'}})
+    return requestBBC.get(url)
         .then(result => ({result, success:true}))
         .catch(error => ({error, success:false}))
 }
@@ -18,16 +25,42 @@ function filterSucceeded(results) {
         .map(result => result.result);
 }
 
-function hasNextPage(results) {
-    const result = results[0];
-    const hasNextPage = result.total - result.offset >= 30;
+const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoFar) => {
+    const path = brand_pid+config.bbcApi.episodesPath;
+    const url = pageNumber === 0 ? path : `${path}?page=${pageNumber}`
 
-    return {result, hasNextPage};
+    return requestBBC.get(url)
+        .then((result) => {
+            const episodePids = result.episodes.map(el => el.programme.pid);
+            if (!episodePids || episodePids.length < 30) {
+                return episodePidsSoFar.concat(episodePids);
+            } else {
+                return getEpisodesResults(brand_pid, pageNumber + 1, episodePidsSoFar.concat(episodePids));
+            }
+        })
+        .catch((err) => {
+            console.log("Error fetching episodePids:", err);
+            return episodePidsSoFar;
+        });
+});
+
+function findAndUpdate(results) {
+    results.map(pid => {
+        const query = { pid };
+        const update = { pid };
+        const options = { upsert: true, new: true };
+
+        return Episode.findOneAndUpdate(query, update, options, function(err, doc) {
+            if (err) return console.log(500, { error: err });
+            console.log("succesfully saved");
+        });
+    })
 }
 
 module.exports = {
     getResults: getResults,
     makeUrls: makeUrls,
     filterSucceeded: filterSucceeded,
-    hasNextPage: hasNextPage
+    getEpisodesResults: getEpisodesResults,
+    findAndUpdate: findAndUpdate
 }

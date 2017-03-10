@@ -15,14 +15,16 @@ function makeUrls(path) {
 
 function getResults(url) {
     return requestBBC.get(url)
-        .then(result => ({result, success:true}))
-        .catch(error => ({error, success:false}))
+        .then(result => result)
+        .catch(err => {
+            // Should be a system log
+            console.log("Error fetching episodePids:", err);
+            return false;
+        })
 }
 
 function filterSucceeded(results) {
-    return results
-        .filter(result => result.success)
-        .map(result => result.result);
+    return results.filter(result => result);
 }
 
 const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoFar) => {
@@ -30,7 +32,7 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
     const url = pageNumber === 0 ? path : `${path}?page=${pageNumber}`
 
     return requestBBC.get(url)
-        .then((result) => {
+        .then(result => {
             const episodePids = result.episodes.map(el => el.programme.pid);
             if (!episodePids || episodePids.length < 30) {
                 return episodePidsSoFar.concat(episodePids);
@@ -38,7 +40,7 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
                 return getEpisodesResults(brand_pid, pageNumber + 1, episodePidsSoFar.concat(episodePids));
             }
         })
-        .catch((err) => {
+        .catch(err => {
             console.log("Error fetching episodePids:", err);
             return episodePidsSoFar;
         });

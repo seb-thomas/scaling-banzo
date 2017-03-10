@@ -2,13 +2,7 @@ const Promise = require("bluebird"),
       config = require('config'),
       Brand = require('../models/brand'),
       Episode = require('../models/episode'),
-      modules = require('./modules')
-      request  = require('request-promise');
-const requestBBC = request.defaults({
-    baseUrl: config.bbcApi.base, 
-    json: true, 
-    headers: {'User-Agent': 'Request-Promise'}
-})
+      modules = require('./modules');
 
 exports.populateBrands = function(req, res) {
     const findAndUpdate = results => {
@@ -36,6 +30,7 @@ exports.populateBrands = function(req, res) {
             });
         })
     }
+
     Promise
         .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.brandsPath))
         .map(modules.getResults)

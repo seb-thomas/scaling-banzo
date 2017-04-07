@@ -1,6 +1,7 @@
-const config   = require('config'),
+const config  = require('config'),
       Promise = require("bluebird"),
-      request  = require('request-promise');
+      request = require('request-promise'),
+      Episode = require('../models/episode');
 
 const requestBBC = request.defaults({
     baseUrl: config.bbcApi.base, 

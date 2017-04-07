@@ -44,7 +44,7 @@ exports.populateBrands = function(req, res) {
 exports.populateEpisodeIndex = function(req, res) {
     const brand_pid = req.params.brand_pid.split();
 
-    modules.getEpisodesResults(brand_pid, 0, [])
+    modules.getEpisodesResults(brand_pid, 29, [])
         .then(modules.findAndUpdate)
         .finally(() => res.json({ message: 'Done' }));
 }

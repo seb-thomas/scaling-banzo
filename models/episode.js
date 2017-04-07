@@ -15,7 +15,8 @@ var EpisodeSchema = new Schema({
         key: String,
         title: String
     },
-    type: String
+    type: String,
+    checked: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Episode', EpisodeSchema);

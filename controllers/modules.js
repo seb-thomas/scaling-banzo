@@ -1,6 +1,7 @@
 const config  = require('config'),
       Promise = require("bluebird"),
       request = require('request-promise'),
+      voca = require('voca'),
       Episode = require('../models/episode');
 
 const requestBBC = request.defaults({
@@ -51,7 +52,13 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
 });
 
 const hasKeywords = (string) => {
-    return true
+    const stringified = JSON.stringify(string)
+    config.keywords.some(includesString)
+    return test; 
+}
+
+const includesString = (subject, search) => {
+    return voca.includes(subject, search);
 }
 
 const getEpisodeDetails = Promise.method((document) => {
@@ -89,5 +96,6 @@ module.exports = {
     getEpisodesResults: getEpisodesResults,
     getEpisodeDetails: getEpisodeDetails,
     findAndUpdate: findAndUpdate,
-    hasKeywords: hasKeywords
+    hasKeywords: hasKeywords,
+    includesString: includesString
 }

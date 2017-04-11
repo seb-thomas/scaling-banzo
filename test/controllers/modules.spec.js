@@ -25,10 +25,18 @@ describe('populateController', function() {
         });
     });
 
-    describe('hasKeywords', function() {
-        it('should return true if a string contains any of the keywords', function() {
+    // describe('hasKeywords', function() {
+    //     it('should return true if a string contains any of the keywords', function() {
+    //         const expected = true;
+    //         const actual = modules.hasKeywords(config.testString);
+    //         expect(actual).to.eql(expected);
+    //     });
+    // });
+    
+    describe('includesString', function() {
+        it('should return true if subject contains search', function() {
             const expected = true;
-            const actual = modules.hasKeywords(config.testString);
+            const actual = modules.includesString('starship', 'star');
             expect(actual).to.eql(expected);
         });
     });

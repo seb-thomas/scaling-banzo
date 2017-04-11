@@ -60,7 +60,36 @@ const getEpisodeDetails = Promise.method((document) => {
     return requestBBC.get(url)
         .then(result => {
             const string = JSON.stringify(result.programme.long_synopsis);
-            includesString(config.keywordsArray, string);
+
+            if (includesString(config.keywordsArray, string)) {
+                const episode = result.programme;
+
+                document.set({
+                    title: episode.title,
+                    date: episode.first_broadcast_date,
+                    short_synopsis: episode.short_synopsis,
+                    medium_synopsis: episode.medium_synopsis,
+                    long_synopsis: episode.long_synopsis,
+                    parent: episode.parent.programme.pid,
+                    ownership: {
+                        key: episode.ownership.service.key,
+                        title: episode.ownership.service.title
+                    },
+                    type: episode.type,
+                    checked: true
+                })
+                console.log(document, result.programme)
+            } else {
+                document.set({ checked: true })
+                console.log('No matches in ', result.programme.title)
+            }
+
+            document.save(err => {
+                if (err)
+                    return err;
+            });
+
+            return document;
         })
         .catch(err => {
             console.log("Error fetching episode:", err);

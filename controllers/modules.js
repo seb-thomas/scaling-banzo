@@ -1,12 +1,11 @@
 const config  = require('config'),
       Promise = require("bluebird"),
       request = require('request-promise'),
-      voca = require('voca'),
       Episode = require('../models/episode');
 
 const requestBBC = request.defaults({
-    baseUrl: config.bbcApi.base, 
-    json: true, 
+    baseUrl: config.bbcApi.base,
+    json: true,
     headers: {'User-Agent': 'Request-Promise'}
 })
 
@@ -51,14 +50,8 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
         });
 });
 
-const hasKeywords = (string) => {
-    const stringified = JSON.stringify(string)
-    config.keywords.some(includesString)
-    return test; 
-}
-
-const includesString = (subject, search) => {
-    return voca.includes(subject, search);
+function includesString(substringArray, string) {
+  return substringArray.some(value => string.includes(value));
 }
 
 const getEpisodeDetails = Promise.method((document) => {
@@ -67,8 +60,7 @@ const getEpisodeDetails = Promise.method((document) => {
     return requestBBC.get(url)
         .then(result => {
             const string = JSON.stringify(result.programme.long_synopsis);
-            console.log(result.programme.long_synopsis)
-            console.log(string, new RegExp(config.keywords).test(string))
+            includesString(config.keywordsArray, string);
         })
         .catch(err => {
             console.log("Error fetching episode:", err);
@@ -96,6 +88,5 @@ module.exports = {
     getEpisodesResults: getEpisodesResults,
     getEpisodeDetails: getEpisodeDetails,
     findAndUpdate: findAndUpdate,
-    hasKeywords: hasKeywords,
     includesString: includesString
 }

@@ -39,3 +39,4 @@ jspm_packages
 
 # Bullshit
 *.DS_Store
+.vscode

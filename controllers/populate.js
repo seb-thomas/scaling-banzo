@@ -1,6 +1,5 @@
 const Promise = require("bluebird"),
       config = require('config'),
-      rp = require('request-promise'),
       Brand = require('../models/brand'),
       Episode = require('../models/episode'),
       modules = require('./modules');
@@ -31,8 +30,9 @@ exports.populateBrands = function(req, res) {
             });
         })
     }
+
     Promise
-        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.brandsPath))
+        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.jsonPath)) 
         .map(modules.getResults)
         .then(modules.filterSucceeded)
         .then(findAndUpdate)
@@ -42,44 +42,26 @@ exports.populateBrands = function(req, res) {
 
 
 exports.populateEpisodeIndex = function(req, res) {
+    const brand_pid = req.params.brand_pid.split();
 
-    const episode_id = req.params.episode_id.split();
-
-    const findAndUpdate = results => {
-        results[0].episodes.map(obj => {
-            const episode = obj.programme;
-
-            // Mongoose allows us query db for existing PID and upsert
-            const query = { pid: episode.pid };
-            const update = { pid: episode.pid };
-            const options = { upsert: true, new: true };
-
-            // Brand.findOneAndUpdate(query, update, options)
-            return Episode.findOneAndUpdate(query, update, options, function(err, doc) {
-                if (err) return console.log(500, { error: err });
-                console.log("succesfully saved");
-            });
-        })
-    }
-
-    Promise
-        .map(episode_id, modules.makeUrls(config.bbcApi.episodesPath))
-        .map(modules.getResults)
-        .then(modules.filterSucceeded)
-        .then(modules.hasNextPage)
-        .then(findAndUpdate)
-        .then(console.log.bind(console))
+    modules.getEpisodesResults(brand_pid, 29, [])
+        .then(modules.findAndUpdate)
         .finally(() => res.json({ message: 'Done' }));
-    // 1. Use brand pid to get episode index
-    //    * Should brand pid come from hardcoded pids or saved brand data?
-    // 2. Save all episode pids in documents
-    // 3. When page 1 is complete, move to page 2 and repeat
-
-    // Use :brand_id: to specify one brand at a time. (or brand pid)
-
 }
 
 exports.populateEpisodes = function(req, res) {
+    const cursor = Episode.find({ checked: {$ne: true} }).limit(10).cursor();
+
+    cursor
+        .eachAsync(document => modules.getEpisodeDetails(document))
+        .finally(() => res.json({ message: 'Done' }));
+
+        // .then(showme)
+        // // .map(episodes, modules.makeUrls(config.bbcApi.jsonPath))
+        // .then(modules.getResults)
+        // .catch(err => res.send(err));
+        // cursor.eachAsync(doc => superagent.post('/saveDoc', doc)).
+        // then(() => console.log('done!'));
     // 1. Loop over all episode documents
     // 2. Use episode pid to get episode detail json
     //    * Only if flag-already-checked != true

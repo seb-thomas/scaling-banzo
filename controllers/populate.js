@@ -32,7 +32,7 @@ exports.populateBrands = function(req, res) {
     }
 
     Promise
-        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.brandsPath))
+        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.jsonPath)) 
         .map(modules.getResults)
         .then(modules.filterSucceeded)
         .then(findAndUpdate)
@@ -50,6 +50,18 @@ exports.populateEpisodeIndex = function(req, res) {
 }
 
 exports.populateEpisodes = function(req, res) {
+    const cursor = Episode.find({ checked: {$ne: true} }).limit(10).cursor();
+
+    cursor
+        .eachAsync(document => modules.getEpisodeDetails(document))
+        .finally(() => res.json({ message: 'Done' }));
+
+        // .then(showme)
+        // // .map(episodes, modules.makeUrls(config.bbcApi.jsonPath))
+        // .then(modules.getResults)
+        // .catch(err => res.send(err));
+        // cursor.eachAsync(doc => superagent.post('/saveDoc', doc)).
+        // then(() => console.log('done!'));
     // 1. Loop over all episode documents
     // 2. Use episode pid to get episode detail json
     //    * Only if flag-already-checked != true

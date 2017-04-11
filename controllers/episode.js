@@ -7,6 +7,11 @@ exports.getEpisodes = function(req, res) {
 
         res.json(episodes);
     });
+
+    // Promise version
+    // Episode.find().exec()
+    //   .then(episodes => res.json(episodes))
+    //   .catch(err => res.send(err));
 }
 
 exports.deleteEpisodes = function(req, res) {

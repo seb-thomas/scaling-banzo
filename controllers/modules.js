@@ -16,7 +16,10 @@ function makeUrls(path) {
 
 function getResults(url) {
     return requestBBC.get(url)
-        .then(result => result)
+        .then(result => {
+            debugger
+            return result;
+        })
         .catch(err => {
             // Should be a system log
             console.log("Error fetching episodePids:", err);
@@ -47,6 +50,25 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
         });
 });
 
+const hasKeywords = (string) => {
+    return true
+}
+
+const getEpisodeDetails = Promise.method((document) => {
+    const url = document.pid+config.bbcApi.jsonPath;
+
+    return requestBBC.get(url)
+        .then(result => {
+            const string = JSON.stringify(result.programme.long_synopsis);
+            console.log(result.programme.long_synopsis)
+            console.log(string, new RegExp(config.keywords).test(string))
+        })
+        .catch(err => {
+            console.log("Error fetching episode:", err);
+            return result;
+        });
+})
+
 function findAndUpdate(results) {
     results.map(pid => {
         const query = { pid };
@@ -65,5 +87,7 @@ module.exports = {
     makeUrls: makeUrls,
     filterSucceeded: filterSucceeded,
     getEpisodesResults: getEpisodesResults,
-    findAndUpdate: findAndUpdate
+    getEpisodeDetails: getEpisodeDetails,
+    findAndUpdate: findAndUpdate,
+    hasKeywords: hasKeywords
 }

@@ -1,5 +1,6 @@
 'use strict';
 const expect = require('chai').expect;
+const config = require('config');
 
 describe('populateController', function() {
     it('should exist', function() {
@@ -24,8 +25,11 @@ describe('populateController', function() {
         });
     });
 
-    // describe isPagedData
-    // it should return true if page key exists
-    // expected true
-    // actual isPagedData(stub)
+    describe('hasKeywords', function() {
+        it('should return true if a string contains any of the keywords', function() {
+            const expected = true;
+            const actual = modules.hasKeywords(config.testString);
+            expect(actual).to.eql(expected);
+        });
+    });
 });

@@ -75,25 +75,22 @@ const getEpisodeDetails = Promise.method((document) => {
                         key: episode.ownership.service.key,
                         title: episode.ownership.service.title
                     },
-                    type: episode.type,
-                    checked: true
+                    type: episode.type
                 })
-                console.log(document, result.programme)
-            } else {
-                document.set({ checked: true })
-                console.log('No matches in ', result.programme.title)
             }
-
-            document.save(err => {
-                if (err)
-                    return err;
-            });
 
             return document;
         })
+        .then((document) => {
+            document
+                .set({ checked: true })
+                .save(err => {
+                    if (err)
+                        return err;
+                });
+        })
         .catch(err => {
-            console.log("Error fetching episode:", err);
-            return result;
+            console.log(`Error fetching episode: ${url}`, err);
         });
 })
 
@@ -103,7 +100,7 @@ function findAndUpdate(results) {
         const update = { pid };
         const options = { upsert: true, new: true };
 
-        return Episode.findOneAndUpdate(query, update, options, function(err, doc) {
+        return Episode.findOneAndUpdate(query, update, options, (err, doc) => {
             if (err) return console.log(500, { error: err });
             console.log("succesfully saved");
         });
@@ -111,11 +108,11 @@ function findAndUpdate(results) {
 }
 
 module.exports = {
-    getResults: getResults,
-    makeUrls: makeUrls,
-    filterSucceeded: filterSucceeded,
-    getEpisodesResults: getEpisodesResults,
-    getEpisodeDetails: getEpisodeDetails,
-    findAndUpdate: findAndUpdate,
-    includesString: includesString
+    getResults,
+    makeUrls,
+    filterSucceeded,
+    getEpisodesResults,
+    getEpisodeDetails,
+    findAndUpdate,
+    includesString
 }

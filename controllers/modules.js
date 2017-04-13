@@ -1,7 +1,6 @@
 const config  = require('config'),
       Promise = require("bluebird"),
-      request = require('request-promise'),
-      Episode = require('../models/episode');
+      request = require('request-promise');
 
 const requestBBC = request.defaults({
     baseUrl: config.bbcApi.base,
@@ -94,17 +93,13 @@ const getEpisodeDetails = Promise.method((document) => {
         });
 })
 
-function findAndUpdate(results) {
-    results.map(pid => {
-        const query = { pid };
-        const update = { pid };
-        const options = { upsert: true, new: true };
+const doFindOneAndUpdate = (Model, query, update) => {
+    const options = { upsert: true, new: true };
 
-        return Episode.findOneAndUpdate(query, update, options, (err, doc) => {
-            if (err) return console.log(500, { error: err });
-            console.log("succesfully saved");
-        });
-    })
+    return Model.findOneAndUpdate(query, update, options, (err, doc) => {
+        if (err) return console.log(500, { error: err });
+        console.log("succesfully saved");
+    });
 }
 
 module.exports = {
@@ -113,6 +108,6 @@ module.exports = {
     filterSucceeded,
     getEpisodesResults,
     getEpisodeDetails,
-    findAndUpdate,
-    includesString
+    includesString,
+    doFindOneAndUpdate
 }

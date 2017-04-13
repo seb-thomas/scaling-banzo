@@ -1,11 +1,10 @@
 const config  = require('config'),
       Promise = require("bluebird"),
-      request = require('request-promise'),
-      Episode = require('../models/episode');
+      request = require('request-promise');
 
 const requestBBC = request.defaults({
-    baseUrl: config.bbcApi.base, 
-    json: true, 
+    baseUrl: config.bbcApi.base,
+    json: true,
     headers: {'User-Agent': 'Request-Promise'}
 })
 
@@ -50,8 +49,8 @@ const getEpisodesResults = Promise.method((brand_pid, pageNumber, episodePidsSoF
         });
 });
 
-const hasKeywords = (string) => {
-    return true
+function includesString(substringArray, string) {
+  return substringArray.some(value => string.includes(value));
 }
 
 const getEpisodeDetails = Promise.method((document) => {
@@ -60,34 +59,55 @@ const getEpisodeDetails = Promise.method((document) => {
     return requestBBC.get(url)
         .then(result => {
             const string = JSON.stringify(result.programme.long_synopsis);
-            console.log(result.programme.long_synopsis)
-            console.log(string, new RegExp(config.keywords).test(string))
+
+            if (includesString(config.keywordsArray, string)) {
+                const episode = result.programme;
+
+                document.set({
+                    title: episode.title,
+                    date: episode.first_broadcast_date,
+                    short_synopsis: episode.short_synopsis,
+                    medium_synopsis: episode.medium_synopsis,
+                    long_synopsis: episode.long_synopsis,
+                    parent: episode.parent.programme.pid,
+                    ownership: {
+                        key: episode.ownership.service.key,
+                        title: episode.ownership.service.title
+                    },
+                    type: episode.type
+                })
+            }
+
+            return document;
+        })
+        .then((document) => {
+            document
+                .set({ checked: true })
+                .save(err => {
+                    if (err)
+                        return err;
+                });
         })
         .catch(err => {
-            console.log("Error fetching episode:", err);
-            return result;
+            console.log(`Error fetching episode: ${url}`, err);
         });
 })
 
-function findAndUpdate(results) {
-    results.map(pid => {
-        const query = { pid };
-        const update = { pid };
-        const options = { upsert: true, new: true };
+const doFindOneAndUpdate = (Model, query, update) => {
+    const options = { upsert: true, new: true };
 
-        return Episode.findOneAndUpdate(query, update, options, function(err, doc) {
-            if (err) return console.log(500, { error: err });
-            console.log("succesfully saved");
-        });
-    })
+    return Model.findOneAndUpdate(query, update, options, (err, doc) => {
+        if (err) return console.log(500, { error: err });
+        console.log("succesfully saved");
+    });
 }
 
 module.exports = {
-    getResults: getResults,
-    makeUrls: makeUrls,
-    filterSucceeded: filterSucceeded,
-    getEpisodesResults: getEpisodesResults,
-    getEpisodeDetails: getEpisodeDetails,
-    findAndUpdate: findAndUpdate,
-    hasKeywords: hasKeywords
+    getResults,
+    makeUrls,
+    filterSucceeded,
+    getEpisodesResults,
+    getEpisodeDetails,
+    includesString,
+    doFindOneAndUpdate
 }

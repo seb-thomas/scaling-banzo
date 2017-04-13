@@ -1,15 +1,17 @@
-const Promise = require("bluebird"),
+const Promise = require('bluebird'),
       config = require('config'),
       Brand = require('../models/brand'),
       Episode = require('../models/episode'),
       modules = require('./modules');
 
-exports.populateBrands = function(req, res) {
-    const findAndUpdate = results => {
-        results.map(obj => {
+exports.populateBrands = (req, res) => {
+    Promise
+        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.jsonPath))
+        .map(modules.getResults)
+        .then(modules.filterSucceeded)
+        .map(obj => {
             const brand = obj.programme;
 
-            // Mongoose allows us query db for existing PID and upsert
             const query = { pid: brand.pid };
             const update = {
                 title: brand.title,
@@ -21,51 +23,25 @@ exports.populateBrands = function(req, res) {
                 },
                 type: brand.type
             };
-            const options = { upsert: true, new: true };
-
-            // Brand.findOneAndUpdate(query, update, options)
-            return Brand.findOneAndUpdate(query, update, options, function(err, doc) {
-                if (err) return console.log(500, { error: err });
-                console.log("succesfully saved");
-            });
+            modules.doFindOneAndUpdate(Brand, query, update);
         })
-    }
-
-    Promise
-        .map(config.bbcApi.brandPids, modules.makeUrls(config.bbcApi.jsonPath)) 
-        .map(modules.getResults)
-        .then(modules.filterSucceeded)
-        .then(findAndUpdate)
-        .catch(console.log.bind(console))
         .finally(() => res.json({ message: 'Done' }));
 }
 
-
-exports.populateEpisodeIndex = function(req, res) {
+exports.populateEpisodeIndex = (req, res) => {
     const brand_pid = req.params.brand_pid.split();
 
     modules.getEpisodesResults(brand_pid, 29, [])
-        .then(modules.findAndUpdate)
+        .map(pid => {
+            modules.doFindOneAndUpdate(Episode, { pid }, { pid });
+        })
         .finally(() => res.json({ message: 'Done' }));
 }
 
-exports.populateEpisodes = function(req, res) {
+exports.populateEpisodes = (req, res) => {
     const cursor = Episode.find({ checked: {$ne: true} }).limit(10).cursor();
 
     cursor
         .eachAsync(document => modules.getEpisodeDetails(document))
         .finally(() => res.json({ message: 'Done' }));
-
-        // .then(showme)
-        // // .map(episodes, modules.makeUrls(config.bbcApi.jsonPath))
-        // .then(modules.getResults)
-        // .catch(err => res.send(err));
-        // cursor.eachAsync(doc => superagent.post('/saveDoc', doc)).
-        // then(() => console.log('done!'));
-    // 1. Loop over all episode documents
-    // 2. Use episode pid to get episode detail json
-    //    * Only if flag-already-checked != true
-    // 3. Filter results by keywords on long_synopsis
-    // 4. On success, save remaining fields to episode document
-    //    * On success OR failure, flag pid as having been checked.
 }

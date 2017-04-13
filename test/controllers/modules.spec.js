@@ -6,7 +6,7 @@ describe('populateController', function() {
     it('should exist', function() {
         expect(require('../../controllers/modules')).to.not.be.undefined;
     });
-    
+
     const modules  = require('../../controllers/modules');
 
     describe('modules', function() {
@@ -25,10 +25,18 @@ describe('populateController', function() {
         });
     });
 
-    describe('hasKeywords', function() {
-        it('should return true if a string contains any of the keywords', function() {
+    describe('includesString', function() {
+        it('should return true if string contains substrings from array', function() {
             const expected = true;
-            const actual = modules.hasKeywords(config.testString);
+            const actual = modules.includesString(config.keywordsArray, config.testStringTrue);
+            expect(actual).to.eql(expected);
+        });
+    });
+
+    describe('includesString', function() {
+        it('should return false if string does not contains substrings from array', function() {
+            const expected = false;
+            const actual = modules.includesString(config.keywordsArray, config.testStringFalse);
             expect(actual).to.eql(expected);
         });
     });

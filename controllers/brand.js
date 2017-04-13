@@ -1,6 +1,6 @@
 var Brand = require('../models/brand');
 
-exports.postBrands = function(req, res) {
+exports.postBrands = (req, res) => {
     // create a new instance of the Brand model
     var newBrand = new Brand(req.body);
 
@@ -14,8 +14,8 @@ exports.postBrands = function(req, res) {
     });
 }
 
-exports.getBrands = function(req, res) {
-    Brand.find(function(err, brands) {
+exports.getBrands = (req, res) => {
+    Brand.find((err, brands) => {
         if (err)
             res.send(err);
 
@@ -23,17 +23,17 @@ exports.getBrands = function(req, res) {
     });
 }
 
-exports.getBrand = function(req, res) {
-    Brand.findById(req.params.brand_id, function(err, brand) {
+exports.getBrand = (req, res) => {
+    Brand.findById(req.params.brand_id, (err, brand) => {
         if (err)
             res.send(err);
         res.json(brand);
     });
 }
 
-exports.putBrand = function(req, res) {
+exports.putBrand = (req, res) => {
     // use our brand model to find the brand we want
-    Brand.findById(req.params.brand_id, function(err, brand) {
+    Brand.findById(req.params.brand_id, (err, brand) => {
 
         if (err)
             res.send(err);
@@ -42,7 +42,7 @@ exports.putBrand = function(req, res) {
         brand.pid = req.body.pid;  // update the brands info
 
         // save the brand
-        brand.save(function(err) {
+        brand.save(err => {
             if (err)
                 res.send(err);
 
@@ -52,10 +52,10 @@ exports.putBrand = function(req, res) {
     });
 }
 
-exports.deleteBrand = function(req, res) {
+exports.deleteBrand = (req, res) => {
     Brand.remove({
         _id: req.params.brand_id
-    }, function(err, brand) {
+    }, (err, brand) => {
         if (err)
             res.send(err);
 
@@ -63,8 +63,8 @@ exports.deleteBrand = function(req, res) {
     });
 }
 
-exports.deleteBrands = function(req, res) {
-    Brand.remove({}, function(err, brand) {
+exports.deleteBrands = (req, res) => {
+    Brand.remove({}, (err, brand) => {
         if (err)
             res.send(err);
 

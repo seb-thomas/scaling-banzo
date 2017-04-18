@@ -11,14 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.16.0",
     "config": "^1.25.1",
     "express": "^4.14.0",
     "mongoose": "^4.7.7",
     "morgan": "^1.7.0",
-    "passport": "^0.3.2",
-    "passport-http": "^0.3.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },

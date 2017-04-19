@@ -1,6 +1,8 @@
 language: node_js
 node_js:
 - stable
+addons:
+  ssh_known_hosts: $wfserver
 after_success:
 - npm run coverage
 - rsync -avzrS -e "ssh" ./config ./models $wfuname@$wfserver:/home/$wfuname/webapps/bearbooks

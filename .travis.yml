@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - stable
 addons:
-  ssh_known_hosts: $DEPLOY_HOST
+  ssh_known_hosts: web317.webfaction.com
   apt:
     packages: sshpass
 after_success:

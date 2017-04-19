@@ -7,6 +7,7 @@ addons:
     packages: sshpass
 after_success:
 - npm run coverage
+- export SSHPASS=$DEPLOY_PASS
 - sshpass -p '$DEPLOY_PASS' rsync -avzrS -e ssh ./config ./models $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 env:
   global:

@@ -8,7 +8,7 @@ addons:
 after_success:
 - npm run coverage
 - export SSHPASS=$DEPLOY_PASS
-- sshpass rsync -avzrS -e ssh ./config ./models $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+- sshpass rsync -avzrS -e "ssh -o stricthostkeychecking=no" ./config ./models $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 env:
   global:
   - secure: Q0Cs7F20g3r5/1NcKKic1tycnTi2K9Ltoua8De5WN/QqF1C48Vep1KN7OYQUgYSXjziuhraW+HZdAIWQ3xhaUJ+mCBRsWsLpTP/u+/GBzWq+2JRFQ/srVqwy7upiY2QcIyQo/4/04wefyILsOh5K0c63pISZ61Q6zWyj0+UICouzv4c/IMNgjWRssxdOFtNx9X6emJ/pZDawNMA7E5iiYt5fhXjIi4U1OdMCiXP9vZof2e1haExdA9MDauZjfP72BY6LJR2vzAz4HDLXPw78R8eGAb9EWdnADrPDshBtJZiV3/KuiPSoPNfjvVcLBI975927ZlUc1/oU/2NaxVhrMg1+XC1c9zcm/i1KvU4oM20IthAxHtv4KHmU3nrdwNjY00fZE3PxbULrVrrpjixm7npSZNdzSXyIVziGPlk0iZvCKNWWl0zBK7ie1y5i2tXAqeBOHfiAdLi5rJO6IacWwFt8+hxbY5UY4CtXuz4F3lS812uAOAE4jz3ENSdIn4pumZe4Reu2j6XaQBUtGWUezPFNFoKf+kDIZ0jeri0yXyF1ZkdaGXhkeBJmnCqSifWlCSn91GpcYhbJAHdcu0J98vM7NGdJGtEAp+7KE5QICQWwMFmz0Hpqx41uI6dvQfThABNK1bFf2GASNgGrDHSqi+EVXeM/TeVvEFZrw/baFcM=

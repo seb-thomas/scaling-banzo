@@ -16,6 +16,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -qazr --delete-after -e 'ssh' ./config ./models $DEPLOY_USER@web317.webfaction.com:/home/$DEPLOY_USER/webapps/bearbooks
+  script: rsync -qazr --delete-after -e 'ssh' ./config ./models ./controllers package.json server.js $DEPLOY_USER@web317.webfaction.com:/home/$DEPLOY_USER/webapps/bearbooks
   on:
     branch: master

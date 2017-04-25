@@ -2,20 +2,22 @@ language: node_js
 node_js:
 - stable
 addons:
-  ssh_known_hosts: web317.webfaction.com
+  ssh_known_hosts: 35.187.179.161
 env:
   global:
-    secure: P4Fd2bBiCtsYxdSujHEPfsG5nt6oSJrImtXov5q/xyGXIqQe1h7gNA3cOK5AOQez82if09aawYfwEV9HAOIuQUfz2bZ05JyNDF6Tm869peRu8jNtfo/H8hNYXl0TgTIDlTkwDRkJ4RWyoIptSNU07A9XmdRN9rCoBqm25Nb/1lra0f7VRudHEDSVItxmcNarVxnlUHiLalPoj6AdeFkKeUPX2K4Do01iE8hQVIzXzDjYqBJNm5p77cKnebDew8TL/NuJo6gOthJmkv/YynYVf1CltGF6xHE5/QG1CxwlmiXylmX/7aonqJFKT7JuC4wP7HNoVKOx1C7n4BzIM5/XGj8Qs0sYLQvveoX0A1JGbwzFfL//qxRBXVmFe3g3TA60UrzEJ8POMnHdR9CDn7RwtZh55jsX5uZR8hdaBKYUxLy82WGVrOij/Rym4QtgXG+6m2/R4lmpfydd+1OuljzhGnI9/M0jRw0P6XqRWs6Ki+CLiEu8d0V1WoKQbvxJ7RtA3ePWVWPvLgqeThQ7J8j8ymkZuC5B49KBRQ0zWbKeDNI67iPL6E2RXwve3OPZtJolonfLzJRfVX3VeioOdNsfnPt/sFXyS0nha3LPACSKsfgJivQR6XjlyrB7w72JRKxAWqTHI/ha82bEMf8xyPPu7KFHA9PFjE4LEEBAgwXrYxo=
+    secure: bolgHNo1o+ZoNpOf+E0jjayAKo2eOfH7DefH2e5wXropMf5YWbbvzBbHIEUocD5nAeDZ5km5IoTLziuzboErVqLUlPHQUGSXYETGcnpCREck1wU/uPAc+pwNpqj0vUJKaOS3PFNL/VDdsHFX9vKUarLrM06VnYwv/LRwykaYT93n7BFwh9b2gIVR2ZyKRlkKUJbLW4bEWMMO1L+MeE+EF3stVgMhEa17muFbLkkgugRWnyQBpwVKbTPpDoX1Y7s8XWGNqxNBPV0KqfZFnd/z31zyh5XkLRTa9hh6CRcJm+X9/l6gpOdSrVy++u1Te3d/F4oQ9f9LtK9cgeDBVoBy9SADGoY+SsEnZd9sBzbTkml656RPgFwVwESpYAZaXcm83bhdx9UMPpzfrxRxLVtd/jc81Rony0GLB4eNGK9jVXfc2u2sCq9hVGdQCS43+Ll9hN5Ndue2WwcgmMwXC21gIzObih9gqNjUkaTO9Ff3GCuo255FC1z9BgMxVMrvdS1xzTfPazMvyS44v1fErOFWdcMXj8If9PfaYUWMKJ1ayVvx3SMB/mkB+Fp8nTOKeBlGuJyrjHqq4jsPk2s0ZbR8tKdbfQe7WbTqgQNCnaCJcqpX6tOawn13Df1Xgv5ixW3N2Iu9Ink0uqQVwZ1t2qK3EnUWGgsCtSW2U6IYMhsmQIg=
 after_success:
 - npm run coverage
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_72860efd75cd_key -iv $encrypted_72860efd75cd_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- openssl aes-256-cbc -K $encrypted_72860efd75cd_key -iv $encrypted_72860efd75cd_iv
+  -in gce_deploy_rsa.enc -out /tmp/gce_deploy_rsa -d
 - eval "$(ssh-agent -s)"
-- chmod 600 /tmp/deploy_rsa
-- ssh-add /tmp/deploy_rsa
+- chmod 600 /tmp/gce_deploy_rsa
+- ssh-add /tmp/gce_deploy_rsa
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -qazr --delete-after -e 'ssh' ./config ./models ./controllers package.json server.js $DEPLOY_USER@web317.webfaction.com:/home/$DEPLOY_USER/webapps/bearbooks
+  script: rsync -qazr --delete-after -e 'ssh' ./config ./models ./controllers package.json
+    server.js $DEPLOY_USER@35.187.179.161:/home/$DEPLOY_USER/webapps/bearbooks
   on:
     branch: master

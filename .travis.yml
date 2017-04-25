@@ -15,9 +15,14 @@ before_deploy:
 - chmod 600 /tmp/gce_deploy_rsa
 - ssh-add /tmp/gce_deploy_rsa
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: rsync -qazr --delete-after -e 'ssh' ./config ./models ./controllers package.json
-    server.js $DEPLOY_USER@35.187.179.161:/home/$DEPLOY_USER/webapps/bearbooks
-  on:
-    branch: master
+  - provider: script
+    skip_cleanup: true
+    script: mkdir -p webapps/bearbooks
+    on:
+      branch: master
+  - provider: script
+    skip_cleanup: true
+    script: rsync -qazr --delete-after -e 'ssh' ./config ./models ./controllers package.json
+      server.js $DEPLOY_USER@35.189.202.160:/home/$DEPLOY_USER/webapps/bearbooks
+    on:
+      branch: master

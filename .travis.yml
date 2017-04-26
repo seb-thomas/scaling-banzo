@@ -17,7 +17,7 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: mkdir -p webapps/bearbooks
+    script: ssh $DEPLOY_USER@35.189.202.160 mkdir -p webapps/bearbooks
     on:
       branch: master
   - provider: script

@@ -55,7 +55,7 @@ router.use(function(req, res, next) {
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8888/api)
-router.get('/', (req, res) => res.json({ message: 'Pew-hoo! You stinky!' }));
+router.get('/', (req, res) => res.json({ message: 'Pee-yoo! You stinky!' }));
 
 router.route('/populate/brands')
     .get(populateController.populateBrands);

@@ -25,8 +25,3 @@ deploy:
     script: rsync -qazr --delete-after -e 'ssh' --files-from=./deploy_paths.txt . $DEPLOY_USER@35.189.202.160:/home/$DEPLOY_USER/webapps/bearbooks
     on:
       branch: master
-  - provider: script
-    skip_cleanup: true
-    script: pm2 startOrRestart ecosystem.config.js
-    on:
-      branch: master

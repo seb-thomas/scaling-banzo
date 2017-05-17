@@ -1,6 +1,7 @@
 branches:
   only:
     - master
+before_install: cd api
 language: node_js
 node_js:
 - stable

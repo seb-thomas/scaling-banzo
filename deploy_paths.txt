@@ -1,5 +1,5 @@
 ecosystem.config.js
-config
+config/default.json
 models
 controllers
 package.json

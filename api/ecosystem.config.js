@@ -8,7 +8,7 @@ module.exports = {
     // First application
     {
       name      : 'server',
-      script    : 'server.js',
+      script    : __dirname+'/server.js',
       env_production : {
         NODE_ENV: 'production'
       }

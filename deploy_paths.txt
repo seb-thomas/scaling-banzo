@@ -1,7 +1,8 @@
-ecosystem.config.js
-config/default.json
-models
-controllers
-package.json
-server.js
-node_modules
+api/ecosystem.config.js
+api/config/default.json
+api/models
+api/controllers
+api/server.js
+api/node_modules
+ui/dist
+ui/node_modules

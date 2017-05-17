@@ -29,6 +29,6 @@ deploy:
       branch: master
   - provider: script
     skip_cleanup: true
-    script: ssh $DEPLOY_USER@35.189.202.160 pm2 startOrRestart /home/$DEPLOY_USER/webapps/bearbooks/ecosystem.config.js
+    script: ssh $DEPLOY_USER@35.189.202.160 pm2 startOrRestart /home/$DEPLOY_USER/webapps/bearbooks/api/ecosystem.config.js
     on:
       branch: master

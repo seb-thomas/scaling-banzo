@@ -1,10 +1,22 @@
 branches:
   only:
     - master
-before_install: cd api
 language: node_js
-node_js:
-- stable
+node_js: stable
+sudo: required
+before_install: # if "install" is overridden
+  # Repo for Yarn
+  - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
+  - cd api
+cache:
+  yarn: true
+install:
+  - cd ../ui
+  - yarn install
+  - cd ..
 addons:
   ssh_known_hosts: 35.189.202.160
 env:
@@ -12,7 +24,6 @@ env:
     secure: bolgHNo1o+ZoNpOf+E0jjayAKo2eOfH7DefH2e5wXropMf5YWbbvzBbHIEUocD5nAeDZ5km5IoTLziuzboErVqLUlPHQUGSXYETGcnpCREck1wU/uPAc+pwNpqj0vUJKaOS3PFNL/VDdsHFX9vKUarLrM06VnYwv/LRwykaYT93n7BFwh9b2gIVR2ZyKRlkKUJbLW4bEWMMO1L+MeE+EF3stVgMhEa17muFbLkkgugRWnyQBpwVKbTPpDoX1Y7s8XWGNqxNBPV0KqfZFnd/z31zyh5XkLRTa9hh6CRcJm+X9/l6gpOdSrVy++u1Te3d/F4oQ9f9LtK9cgeDBVoBy9SADGoY+SsEnZd9sBzbTkml656RPgFwVwESpYAZaXcm83bhdx9UMPpzfrxRxLVtd/jc81Rony0GLB4eNGK9jVXfc2u2sCq9hVGdQCS43+Ll9hN5Ndue2WwcgmMwXC21gIzObih9gqNjUkaTO9Ff3GCuo255FC1z9BgMxVMrvdS1xzTfPazMvyS44v1fErOFWdcMXj8If9PfaYUWMKJ1ayVvx3SMB/mkB+Fp8nTOKeBlGuJyrjHqq4jsPk2s0ZbR8tKdbfQe7WbTqgQNCnaCJcqpX6tOawn13Df1Xgv5ixW3N2Iu9Ink0uqQVwZ1t2qK3EnUWGgsCtSW2U6IYMhsmQIg=
 after_success:
 - npm run coverage
-- cd ..
 - openssl aes-256-cbc -K $encrypted_72860efd75cd_key -iv $encrypted_72860efd75cd_iv
   -in gce_deploy_rsa.enc -out /tmp/gce_deploy_rsa -d
 - eval "$(ssh-agent -s)"

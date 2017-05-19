@@ -1,8 +1,13 @@
 api/ecosystem.config.js
 api/config/default.json
+api/config/sample.local.json
 api/models
 api/controllers
 api/server.js
 api/node_modules
+api/package.json
+api/yarn.lock
 ui/dist
 ui/node_modules
+ui/package.json
+ui/yarn.lock

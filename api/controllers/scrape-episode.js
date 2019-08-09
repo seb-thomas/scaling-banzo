@@ -1,5 +1,7 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+import axios from "axios";
+import cheerio from "cheerio";
+import cfg from "../config/default.json";
+import config from "config";
 
 const url = "https://www.bbc.co.uk/programmes/m00075jv";
 
@@ -9,6 +11,7 @@ axios(url)
     const $ = cheerio.load(html);
     const getDescParagraphs = $(".synopsis-toggle__long > p");
     const descParagraphs = [];
+    console.log(config.DBHost);
 
     getDescParagraphs.each(function() {
       const paragraph = $(this).text();

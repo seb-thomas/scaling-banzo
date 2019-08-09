@@ -57,6 +57,8 @@ router.use(function(req, res, next) {
 // test route to make sure everything is working (accessed at GET http://localhost:8888/api)
 router.get('/', (req, res) => res.json({ message: 'Pee-yoo! You stinky!' }));
 
+// Populate the db with brands as per brandPids[] set in config
+// BrandSchema
 router.route('/populate/brands')
     .get(populateController.populateBrands);
 

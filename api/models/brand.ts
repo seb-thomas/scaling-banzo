@@ -1,7 +1,6 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+import { model, Schema } from "mongoose";
 
-var BrandSchema = new Schema({
+const BrandSchema = new Schema({
   title: String,
   pid: { type: String, unique: true },
   synopsis: String,
@@ -12,4 +11,4 @@ var BrandSchema = new Schema({
   type: { type: String, required: true }
 });
 
-module.exports = mongoose.model("Brand", BrandSchema);
+export default model("Brand", BrandSchema);

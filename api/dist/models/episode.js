@@ -1,7 +1,7 @@
-var mongoose     = require('mongoose');
-var Schema       = mongoose.Schema;
-
-var EpisodeSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
+const EpisodeSchema = new mongoose_1.Schema({
     title: String,
     pid: { type: String, unique: true },
     date: Date,
@@ -18,5 +18,5 @@ var EpisodeSchema = new Schema({
     type: String,
     checked: { type: Boolean, default: false }
 });
-
-module.exports = mongoose.model('Episode', EpisodeSchema);
+exports.default = mongoose_1.model("Episode", EpisodeSchema);
+//# sourceMappingURL=episode.js.map

@@ -2,10 +2,9 @@
   "name": "bear-books",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && node server.js",
+    "start": "tsc && node dist/server.js",
     "test": "nyc mocha --reporter=nyan --recursive **/*.spec.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -14,17 +13,20 @@
   "dependencies": {
     "body-parser": "^1.16.0",
     "config": "^1.25.1",
-    "express": "^4.14.0",
+    "express": "^4.17.1",
     "mongoose": "^4.7.7",
     "morgan": "^1.7.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
+    "@types/express": "^4.17.0",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "codecov": "^1.0.1",
     "mocha": "^3.2.0",
-    "nyc": "^10.1.2"
+    "nyc": "^10.1.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }

@@ -12,4 +12,4 @@ var BrandSchema = new Schema({
   type: { type: String, required: true }
 });
 
-export default mongoose.model("Brand", BrandSchema);
+module.exports = mongoose.model("Brand", BrandSchema);

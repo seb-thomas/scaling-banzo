@@ -16,13 +16,13 @@ function populateBrands(req, res) {
         const brand = obj.programme;
         const query = { pid: brand.pid };
         const update = {
-            title: brand.title,
-            pid: brand.pid,
-            synopsis: brand.short_synopsis,
             ownership: {
                 key: brand.ownership.service.key,
                 title: brand.ownership.service.title
             },
+            pid: brand.pid,
+            synopsis: brand.short_synopsis,
+            title: brand.title,
             type: brand.type
         };
         modules_1.doFindOneAndUpdate(brand_1.default, query, update);

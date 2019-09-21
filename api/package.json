@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "tsc && node dist/server.js",
-    "test": "nyc mocha --reporter=nyan --recursive **/*.spec.js",
+    "test": "mocha -r ts-node/register **/*.spec.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "author": "",
@@ -20,12 +20,15 @@
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.0",
     "@types/express": "^4.17.0",
-    "chai": "^3.5.0",
-    "chai-http": "^3.0.0",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "codecov": "^1.0.1",
-    "mocha": "^3.2.0",
+    "mocha": "^6.2.0",
     "nyc": "^10.1.2",
+    "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   }
